@@ -2,6 +2,9 @@ package com.hutaishuai.BeatboxApp;
 import java.awt.*;
 import javax.swing.*;
 import javax.sound.midi.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.*;
 import java.awt.event.*;
 
@@ -42,13 +45,17 @@ public class BeatBox {
         stop.addActionListener(new MyStopListener());
         buttonBox.add(stop);
 
-        JButton upTempo = new JButton("Tempo up");
+        JButton upTempo = new JButton("加快");
         upTempo.addActionListener(new MyUpTempoListener());
         buttonBox.add(upTempo);
 
-        JButton downTempo = new JButton("Tempo down");
+        JButton downTempo = new JButton("减慢");
         downTempo.addActionListener(new MyDownTempoListener());
         buttonBox.add(downTempo);
+
+        JButton serializelt = new JButton("存储");
+        serializelt.addActionListener(new MySendListener());
+        buttonBox.add(serializelt);
 
         Box nameBox = new Box(BoxLayout.Y_AXIS);
         for (int i = 0; i < 16; i++) {
@@ -195,6 +202,24 @@ public class BeatBox {
             event = new MidiEvent(a, tick);
         }catch(Exception e){e.printStackTrace();}
         return event;
+    }
+
+    public class MySendListener implements ActionListener{
+        public void actionPerformed(ActionEvent event){
+            //此数组用来保存复选框的状态
+            boolean[] checkboxState = new boolean[256];
+            for (int i = 0; i < 256; i++){
+                JCheckBox check = (JCheckBox) checkboxList.get(i);
+                if (check.isSelected()){
+                    checkboxState[i] = true;
+                }
+            }
+            try {
+                FileOutputStream fileStream = new FileOutputStream(new File("Checkbox.ser"));
+                ObjectOutputStream os = new ObjectOutputStream(fileStream);
+                os.writeObject(checkboxState);
+            }catch (Exception e){e.printStackTrace();}
+        }
     }
 }//关闭类
 
