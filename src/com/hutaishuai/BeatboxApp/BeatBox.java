@@ -38,6 +38,10 @@ public class BeatBox {
         start.addActionListener(new MyStartListener());
         buttonBox.add(start);
 
+        JButton stop = new JButton("结束");
+        stop.addActionListener(new MyStopListener());
+        buttonBox.add(stop);
+
         JButton upTempo = new JButton("Tempo up");
         upTempo.addActionListener(new MyUpTempoListener());
         buttonBox.add(upTempo);
@@ -124,6 +128,7 @@ public class BeatBox {
             }//内部循环
 
             //创建此乐器的事件并加到track上
+            makeTracks(trackList);
             track.add(makeEvent(176, 1, 127, 0, 16));
         }//外部循环关闭
 
