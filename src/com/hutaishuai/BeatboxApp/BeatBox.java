@@ -2,9 +2,7 @@ package com.hutaishuai.BeatboxApp;
 import java.awt.*;
 import javax.swing.*;
 import javax.sound.midi.*;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.*;
 import java.awt.event.*;
 
@@ -204,6 +202,7 @@ public class BeatBox {
         return event;
     }
 
+    //存储节奏
     public class MySendListener implements ActionListener{
         public void actionPerformed(ActionEvent event){
             //此数组用来保存复选框的状态
@@ -219,6 +218,30 @@ public class BeatBox {
                 ObjectOutputStream os = new ObjectOutputStream(fileStream);
                 os.writeObject(checkboxState);
             }catch (Exception e){e.printStackTrace();}
+        }
+    }
+
+    //读取还原节奏
+    public class MyReadInListener implements ActionListener{
+        public void actionPerformed(ActionEvent event){
+            boolean[] checkboxState = null;
+            try {
+                FileInputStream fileIn = new FileInputStream(new File("Checkbox.ser"));
+                ObjectInputStream is = new ObjectInputStream(fileIn);
+                checkboxState = (boolean[]) is.readObject();
+            }catch (Exception ex){ex.printStackTrace();}
+
+            for (int i = 0; i < 256; i++){
+                JCheckBox check = (JCheckBox) checkboxList.get(i);
+                if (checkboxState[i]){
+                    check.setSelected(true);
+                }else {
+                    check.setSelected(false);
+                }
+
+            }
+            sequencer.stop();
+            buildTrackAndStart();
         }
     }
 }//关闭类
